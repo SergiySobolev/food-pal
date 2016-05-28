@@ -2,5 +2,6 @@ rootProject.name = 'food-pal'
 include 'config-server'
 include 'discovery-service'
 include 'account-service'
+include 'food-pal-client'
 
 
