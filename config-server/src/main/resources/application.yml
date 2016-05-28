@@ -5,6 +5,6 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/SergiySobolev/food-pal/tree/master/food-pal-config
+          uri: https://github.com/SergiySobolev/sbk-cloud-config
 server:
   port: 8888
