@@ -1,8 +1,10 @@
 package com.sbk;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -24,8 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @EnableZuulProxy
-@EnableDiscoveryClient
-@SpringBootApplication
+@SpringCloudApplication
 @EnableFeignClients
 public class FoodPalClientApplication {
 
@@ -101,6 +102,16 @@ class RequestApiGatewayRestController {
     @RequestMapping(method = RequestMethod.GET, path = "/msg")
     public List<String> msg(){
         return reservationService.msg();
+    }
+
+    @HystrixCommand(fallbackMethod = "getBackupGuide")
+    @RequestMapping(method = RequestMethod.GET, path = "/musterror")
+    public String haveToBeError() {
+        return restTemplate.getForObject("http://account-service/musterror", String.class);
+    }
+
+    String getBackupGuide() {
+        return "None available! Your backup guide is: Cookie";
     }
 }
 

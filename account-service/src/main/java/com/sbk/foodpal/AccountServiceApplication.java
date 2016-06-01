@@ -1,10 +1,13 @@
 package com.sbk.foodpal;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
@@ -24,8 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-@EnableDiscoveryClient
-@SpringBootApplication
+@SpringCloudApplication
 @EnableFeignClients
 public class AccountServiceApplication {
 
@@ -62,6 +64,11 @@ class MessageController {
     @Value("${configuration.projectName}")
     String projectName;
 
+    @RequestMapping(value = "/musterror", produces = "application/json")
+    public String mustBeError(){
+        throw new RuntimeException("Some exception");
+    }
+
     @RequestMapping(value = "/msg", produces = "application/json")
     public List<String> msg(){
         List<String> env = Arrays.asList(
@@ -82,41 +89,15 @@ interface AccountRepository extends JpaRepository<Account, Long> {
 }
 
 @Entity
+@Data
+@NoArgsConstructor
 class Account {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
 
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    public Account(String name) {
-        this.name = name;
-    }
-
-    public Account() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    Account(String name) {
         this.name = name;
     }
 }
